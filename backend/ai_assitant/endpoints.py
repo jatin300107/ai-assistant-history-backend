@@ -40,8 +40,10 @@ def chat_with_ai(
         )
     else:
         conversation = db.get(Conversation, body.conversation_id)
-        if not conversation or conversation.user_id != current_user.id:
+        if not conversation :
             raise HTTPException(status_code=404, detail="Conversation not found")
+        elif conversation.user_id != current_user.id:
+            raise HTTPException(status_code=403,detail="Not authorized to access this conversation")
 
     save_message(msg=body.prompt, sender="user", db=db, conversation_id=conversation.id)
 
